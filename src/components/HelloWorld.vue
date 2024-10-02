@@ -9,6 +9,6 @@ defineProps({
 
 <template>
   <div v-if="isFetching">fetching...</div>
-  <div v-if="error">message...</div>
+  <div v-if="error">error...</div>
   <div>{{ data }}</div>
 </template>
