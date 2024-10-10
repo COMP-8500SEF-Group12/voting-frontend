@@ -1,17 +1,13 @@
 <template>
-    <div>
-        {{ votingName }}
+    <div v-if="isFinished">
+        {{ data }}
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
-const votingName = ref('')
-
-onMounted(() => {
-    votingName.value = route.params.id
-})
+import { useFetch } from '@vueuse/core'
+import { useRouteParams } from '@vueuse/router'
+const votingId = useRouteParams('id')
+const url = `/api/voting-detail?voting_id=${votingId.value}&user_id=s123456`
+const { data, isFinished } = useFetch(url).get().json()
 </script>
