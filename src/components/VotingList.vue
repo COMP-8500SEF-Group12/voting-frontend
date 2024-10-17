@@ -18,5 +18,5 @@
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { useFetch } from '@vueuse/core'
-const { data, isFinished } = useFetch("/api/voting-list").get().json()
+const { data, isFinished } = useFetch("/api/voting-lists").get().json()
 </script>
