@@ -7,7 +7,7 @@
           Back to Home
         </Button>
         <Button variant="outline" class="w-full" @click="()=>{
-            router.push(`/voteResult/1`)
+            router.push(`/votingResult/1`)
         }">
           View Voting Results
         </Button>
