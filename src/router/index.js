@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import Vote from '@/views/Vote.vue'
 import VotingResult from '@/views/VotingResult/index.vue'
+import VotePending from '@/views/VotePending.vue'
 
 const routes = [
   {
@@ -13,6 +14,11 @@ const routes = [
     path: '/vote/:id',
     name: 'Vote',
     component: Vote
+  },
+  {
+    path: '/votePending',
+    name: 'VotePending',
+    component: VotePending
   },
   {
     path: '/votingResult/:id',
