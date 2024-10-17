@@ -1,24 +1,23 @@
 <template>
 
-  <div class="chart-container" style="display: flex; justify-content: center; flex-direction: column; height: 130vh;">
+  <div class="flex justify-center items-center h-full w-full flex-col">
 
 
-    <div class="Home-button" style="display: flex; width: 100%;">
-      <el-button type="danger" round size = "large" style="transform: translate(120px, 60px); width: 100px; height: 50px; font-size: 20px; color: white;" @click="goHomePage">Home</el-button>
-    </div>
-
-    <div class="voting-description"  :style="{width: '50%', height: '10%', marginBottom: '20px', fontSize: '16px', color: 'white'}">
-        <h1>Voting Name: {{ voting_name}}</h1>
-        <h5>Voting Description: {{ voting_description }}</h5>
-        <h5>Voting Numbers: {{ voting_numbers }}</h5>
+    <div class="voting-description"  :style="{width: '50%', height: '10%', marginTop: '20px', marginBottom: '10px', fontSize: '16px'}">
+        <p class="text-3xl text-bold">{{ voting_name}}</p>
+        <p class="text-2xl text-stone-600">{{ voting_description }}</p>
+        <p class="text-xl">{{ voting_numbers }} Participants</p>
     </div>
 
 
-    <div id="barChart" :style="{width: '50%', height: '35%', marginBottom: '20px', marginTop: '20px'}"></div>
+    <div id="barChart" :style="{width: '50%', height: '30%', marginBottom: '10px', marginTop: '10px'}"></div>
 
 
     <div id="pieChart" :style="{width: '50%', height: '50%', marginBottom: '20px'}"></div>
 
+    <div class="Home-button" style=" width: 100%; justify-content: center; display: flex; margin-top: 20px;">
+      <el-button type="danger" round size = "large" style=" width: 100px; height: 50px; font-size: 20px; color: white;" @click="goHomePage">Home</el-button>
+    </div>
 
   </div>
 
@@ -55,12 +54,12 @@ setup() {
         }
         
         if (votingData.value) {
-            if (!votingData.value.data) {
+            if (!votingData.value) {
                 console.error("Data is undefined in votingData:", votingData.value);
                 return;
             }
         }
-        const data = votingData.value.data;
+        const data = votingData.value;
         votingDetails.value = data;
         
         voting_name.value = data.voting_name;
@@ -92,12 +91,12 @@ setup() {
         const barChart = echarts.init(document.getElementById('barChart'))
         
         barChart.setOption({
-            backgroundColor: '#08263a',
+            //backgroundColor: 'white',
             
             title: {
                 text: votingDetails.value.voting_options[0]?.option_title,
                 textStyle: {
-                    color: '#FFFFFF',
+                    color: "black",
                     fontSize: 24, 
                     fontWeight: 'bold'
                 }
@@ -106,7 +105,7 @@ setup() {
             xAxis: {
                 data: optionData1.value.map(item => item.name),
                 axisLabel: {
-                    color: '#FFFFFF',
+                    color: 'black',
                     fontSize: 14, 
                     fontWeight: 'bold'
                 }
@@ -114,7 +113,7 @@ setup() {
             visualMap: {
                 show: false,
                 min: 0,
-                max: 5,
+                max: 3,
                 dimension: 0,
                 inRange: {
                 color: ['#4a657a', '#308e92', '#b1cfa5', '#f5d69f', '#f5898b', '#ef5055']
@@ -151,7 +150,7 @@ setup() {
             legend: {
                 top: 'bottom',
                 textStyle: {
-                color: '#FFFFFF',
+                
                 fontWeight: 'bold',
                 fontSize: 14
                 }
@@ -159,7 +158,7 @@ setup() {
             title: {
                 text: votingDetails.value.voting_options[1]?.option_title,
                 textStyle: {
-                    color: '#FFFFFF',
+                    
                     fontSize: 24, 
                     fontWeight: 'bold'
                 }
@@ -197,22 +196,16 @@ setup() {
     })
     
     }
-    return {votingDetails, voting_name, voting_description, voting_numbers, goHomePage}
+    return {votingDetails, voting_name, voting_description, voting_numbers, goHomePage,votingId}
 }  
 }
 </script>
 
 <style scoped>
 
-
-
-
-.chart-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh; 
-  background-color: #08263a; 
+.flex {
+  min-height: 120vh; 
 }
+
+
 </style>
