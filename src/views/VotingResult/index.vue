@@ -1,30 +1,36 @@
 <template>
-    <div class="w-full  flex flex-col justify-center items-center bg-background" v-if="isFinished">
-        <div class="w-full p-12 flex flex-col justify-center items-center bg-zinc-50">
+    <div class="w-full  flex flex-col justify-center items-center bg-zinc-50" v-if="isFinished">
+        <div class="prose w-full p-12 flex flex-col justify-center items-center bg-zinc-50">
             
-    <div class="prose bg-white p-8 rounded-lg shadow-md max-w-2xl">
+    <div class="bg-white p-8 rounded-lg shadow-md ">
         <h1 class="text-3xl font-bold mb-4">{{ data.voting_name }}</h1>
-        
         <p class="text-gray-600 mb-6">{{ data.voting_description }}</p>
-        
         <div class="mb-6">
             <p class="font-semibold">Voting ID: <span class="font-normal">{{ data.voting_id }}</span></p>
             <p class="font-semibold">Voting Date: <span class="font-normal">{{ data.voting_date }}</span></p>
-            <p class="font-semibold">Status: <span class="font-normal">{{ data.is_voted ? 'Voted' : 'Not Voted' }}</span></p>
+            <p class="font-semibold">Total Voting Numbers: {{ data.voting_numbers }}</p>
         </div>
         <v-chart :option="chartOneOption" class="h-96" />
-        <v-chart :option="chartTwoOption" class="h-96"/>
+        <v-chart :option="chartTwoOption" class="w-full" style=" height: 600px;"  />
+        <div class="flex flex-row-reverse w-full mt-6">
+            <Button @click="()=>{
+            router.push(`/`)
+        }">Back to Home</Button>
+        </div>
     </div>
 </div>
     </div>
 </template>
 
 <script setup>
+import {Button} from "@/components/ui/button";
 import "echarts";
 import VChart from 'vue-echarts';
 import { useFetch } from '@vueuse/core'
 import { useRouteParams } from '@vueuse/router'
 import { computed } from 'vue'
+import {useRouter} from 'vue-router'
+const router = useRouter()
 const votingId = useRouteParams('id')
 const url = `/api/voting-detail?voting_id=${votingId.value}&user_id=s123456`
 const { data,isFinished } = useFetch(url).get().json()
@@ -123,7 +129,13 @@ series: [
                 shadowOffsetX: 0,
                 shadowColor: 'rgba(0, 0, 0, 0.5)'
             }
-        }
+        },
+        label: {
+            show: false  
+          },
+          labelLine: {
+            show: false  
+        },
     }
 ]
 }
