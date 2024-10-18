@@ -73,5 +73,6 @@ const router = useRouter()
 const open = ref(false)
 const userId = ref('s123456')
 const nickname = ref('s123456')
-const { data, isFinished } = useFetch("/api/voting-lists").get().json()
+const API_URL = "http://188.166.204.21:5000"
+const { data, isFinished } = useFetch(`${API_URL}/voting-lists`).get().json()
 </script>

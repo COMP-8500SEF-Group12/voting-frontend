@@ -23,15 +23,15 @@ export default defineConfig({
       ],
     },
   }),],
-  server:{
-    proxy:{
-      '/api':{
-        target:'http://188.166.204.21:5000',
-        changeOrigin:true,
-        rewrite:(path)=>path.replace(/^\/api/,'')
-      }
-    }
-  },
+  // server:{
+  //   proxy:{
+  //     '/api':{
+  //       target:'http://188.166.204.21:5000',
+  //       changeOrigin:true,
+  //       rewrite:(path)=>path.replace(/^\/api/,'')
+  //     }
+  //   }
+  // },
   resolve:{
     alias:{
       '@': path.resolve(__dirname, './src'),

@@ -30,9 +30,10 @@ import { useFetch } from '@vueuse/core'
 import { useRouteParams } from '@vueuse/router'
 import { computed } from 'vue'
 import {useRouter} from 'vue-router'
+const API_URL = "http://188.166.204.21:5000"
 const router = useRouter()
 const votingId = useRouteParams('id')
-const url = `/api/voting-detail?voting_id=${votingId.value}&user_id=s123456`
+const url = `${API_URL}/voting-detail?voting_id=${votingId.value}&user_id=s123456`
 const { data,isFinished } = useFetch(url).get().json()
 
 const chartOneOption = computed(() => {
