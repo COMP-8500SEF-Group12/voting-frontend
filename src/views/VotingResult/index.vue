@@ -30,7 +30,7 @@ import { useFetch } from '@vueuse/core'
 import { useRouteParams } from '@vueuse/router'
 import { computed } from 'vue'
 import {useRouter} from 'vue-router'
-const API_URL = "http://188.166.204.21:5000"
+const API_URL = "/api"
 const router = useRouter()
 const votingId = useRouteParams('id')
 const url = `${API_URL}/voting-detail?voting_id=${votingId.value}&user_id=s123456`
