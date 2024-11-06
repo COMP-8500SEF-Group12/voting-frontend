@@ -50,11 +50,11 @@ import { useFetch } from '@vueuse/core'
 import { useRouteParams } from '@vueuse/router'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import {API_URL} from '@/lib/utils'
 
 const router = useRouter()
 const checkboxLists = ref([])
 const votingId = useRouteParams('id')
-const API_URL = "/api"
 const url = `${API_URL}/voting-detail?voting_id=${votingId.value}&user_id=s123456`
 const postUrl = `${API_URL}/vote`
 const { data, isFinished } = useFetch(url).get().json()

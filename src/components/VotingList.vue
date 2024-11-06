@@ -69,10 +69,11 @@ import { Button } from '@/components/ui/button'
 import { useFetch } from '@vueuse/core'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import {API_URL} from '@/lib/utils'
+
 const router = useRouter()
 const open = ref(false)
 const userId = ref('s123456')
 const nickname = ref('s123456')
-const API_URL = "/api"
 const { data, isFinished } = useFetch(`${API_URL}/voting-lists`).get().json()
 </script>
