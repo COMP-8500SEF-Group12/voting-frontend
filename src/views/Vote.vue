@@ -14,7 +14,7 @@
                 </div>
                 <div v-for="option in data.voting_options" :key="option.option_id" class="mb-8">
                     <h2 class="text-xl font-semibold mb-3">{{ option.option_title }}</h2>
-                    <p class="text-sm text-gray-500 mb-2">Type: {{ option.option_type === 'single' ? 'Single choice' :
+                    <p class="text-sm text-gray-500 mb-2">{{ option.option_type === 'single' ? 'Single choice' :
         'Multiple choice' }}</p>
                     <RadioGroup v-if="option.option_type === 'single'">
                         <div class="flex items-center space-x-2" v-for="item in option.option_list">
@@ -31,8 +31,8 @@
                     <Button @click="async () => {
         toast.success('Voting Successfully!')
         router.push(`/votePending`)
-    // 发送一个 post 请求
-                await execute()
+        // 发送一个 post 请求
+        await execute()
             }">Submit</Button>
                 </div>
             </div>
@@ -50,7 +50,7 @@ import { useFetch } from '@vueuse/core'
 import { useRouteParams } from '@vueuse/router'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import {API_URL} from '@/lib/utils'
+import { API_URL } from '@/lib/utils'
 
 const router = useRouter()
 const checkboxLists = ref([])
