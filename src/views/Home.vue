@@ -39,13 +39,41 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useStorage } from '@vueuse/core'
 import { ref } from 'vue'
+import { useToast } from '@/components/ui/toast/use-toast'
+import { h } from 'vue'
+import { ToastAction } from '@/components/ui/toast'
+
+
 const voteId = ref('')
 const nickname = ref('')
 const user = useStorage('user', { id: '', nickname: '' })
+const { toast } = useToast();
+
+
+function handleSaveCheck(){
+  const voteIdPattern = /^s\d{7}$/
+  return voteIdPattern.test(voteId.value)
+}
 
 function handleSaveClick() {
   console.log('save click')
-  user.value.id = voteId.value
-  user.value.nickname = nickname.value
+  const isVoteIdValid = handleSaveCheck()
+  if (isVoteIdValid){
+    user.value.id = voteId.value
+    user.value.nickname = nickname.value
+  }else{
+    toast({
+      title: 'Error',
+      description: 'VoteID must be a 7-digit number beginning  with \'s\' .',
+      variant: 'destructive',
+      action: h(ToastAction, {
+          altText: 'Try again',
+        }, {
+          default: () => 'Try again',
+      }) 
+    });
+    return;
+  }
 }
+
 </script>
