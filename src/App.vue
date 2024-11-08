@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/sonner'
 
 <template>
   <main class="w-full h-screen pb-14 overflow-auto bg-zinc-50">
-    <RouterView/>
-    <Toaster />
+    <RouterView />
+    <Toaster richColors />
   </main>
 </template>
