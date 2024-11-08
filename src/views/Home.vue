@@ -59,7 +59,7 @@ function handleSaveClick() {
     user.value.id = voteId.value
     user.value.nickname = nickname.value
   } else {
-    toast.error('The input VoteId is Error.')
+    toast.error('Please enter the correct eight-digit vote id')
   }
 }
 
