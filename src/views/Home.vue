@@ -39,13 +39,28 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useStorage } from '@vueuse/core'
 import { ref } from 'vue'
+import { toast } from 'vue-sonner'
+import { h } from 'vue'
+
+
 const voteId = ref('')
 const nickname = ref('')
 const user = useStorage('user', { id: '', nickname: '' })
 
-function handleSaveClick() {
-  console.log('save click')
-  user.value.id = voteId.value
-  user.value.nickname = nickname.value
+
+function handleSaveCheck() {
+  const voteIdPattern = /^s\d{7}$/
+  return voteIdPattern.test(voteId.value)
 }
+
+function handleSaveClick() {
+  const isVoteIdValid = handleSaveCheck()
+  if (isVoteIdValid) {
+    user.value.id = voteId.value
+    user.value.nickname = nickname.value
+  } else {
+    toast.error('Please enter the correct eight-digit vote id')
+  }
+}
+
 </script>
