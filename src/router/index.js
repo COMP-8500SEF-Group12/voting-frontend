@@ -3,6 +3,7 @@ import Home from '@/views/Home.vue'
 import Vote from '@/views/Vote.vue'
 import VotingResult from '@/views/VotingResult/index.vue'
 import VotePending from '@/views/VotePending.vue'
+import CreateVote from '@/views/CreateVote.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/votingResult/:id',
     name: 'VotingResult',
     component: VotingResult,
+  },
+  {
+    path: '/createVote',
+    name: 'CreateVote',
+    component: CreateVote
   }
 ]
 

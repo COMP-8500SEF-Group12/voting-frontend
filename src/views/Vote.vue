@@ -15,25 +15,32 @@
                 <div v-for="option in data.voting_options" :key="option.option_id" class="mb-8">
                     <h2 class="text-xl font-semibold mb-3">{{ option.option_title }}</h2>
                     <p class="text-sm text-gray-500 mb-2">{{ option.option_type === 'single' ? 'Single choice' :
-        'Multiple choice' }}</p>
-                    <RadioGroup v-if="option.option_type === 'single'">
-                        <div class="flex items-center space-x-2" v-for="item in option.option_list">
-                            <RadioGroupItem id="r1" :value="item.list_id" />
-                            <Label for="r1">{{ item.list_title }}</Label>
-                        </div>
-                    </RadioGroup>
-                    <div v-else v-for="item in option.option_list" class="flex items-center gap-2">
-                        <Checkbox :value="item.list_id" />
-                        {{ item.list_title }}
+                            'Multiple choice' }}</p>
+                    <el-radio-group v-if="option.option_type === 'single'" v-model="singleChoices[option.option_id]">
+                        <el-radio 
+                            v-for="item in option.option_list" 
+                            :key="item.list_id" 
+                            :value="item.list_id"
+                        >
+                            {{ item.list_title }}
+                        </el-radio>
+                    </el-radio-group>
+
+                    <div v-else>
+                        <el-checkbox-group v-model="multipleChoices[option.option_id]">
+                            <el-checkbox 
+                                v-for="item in option.option_list" 
+                                :key="item.list_id" 
+                                :value="item.list_id"
+                            >
+                                {{ item.list_title }}
+                            </el-checkbox>
+                        </el-checkbox-group>
                     </div>
                 </div>
-                <div class="w-full flex flex-row-reverse">
-                    <Button @click="async () => {
-        toast.success('Voting Successfully!')
-        router.push(`/votePending`)
-        // 发送一个 post 请求
-        await execute()
-            }">Submit</Button>
+                <div class="w-full flex flex-row-reverse gap-2">
+                    <Button @click="handleSubmit">Submit</Button>
+                    <Button variant="secondary" @click="handleBackClick">Back</Button>
                 </div>
             </div>
         </div>
@@ -43,27 +50,95 @@
 <script setup>
 import { toast } from 'vue-sonner'
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Checkbox } from '@/components/ui/checkbox'
 import { useFetch } from '@vueuse/core'
 import { useRouteParams } from '@vueuse/router'
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { API_URL } from '@/lib/utils'
+import { reactive } from 'vue'
 
 const router = useRouter()
-const checkboxLists = ref([])
 const votingId = useRouteParams('id')
 const url = `${API_URL}/voting-detail?voting_id=${votingId.value}&user_id=s123456`
 const postUrl = `${API_URL}/vote`
 const { data, isFinished } = useFetch(url).get().json()
-const { postData, execute } = useFetch(postUrl, { immediate: false }).post(
-    {
-        "user_id": "s123456",
-        "user_nickname": "John Doe",
-        "voting_id": "1",
-        "votes": ["1", "2"]
+
+// 分别存储单选和多选的结果
+const singleChoices = reactive({})
+const multipleChoices = reactive({})
+
+function validateVotes() {
+    console.log(singleChoices)
+    console.log(multipleChoices)  
+    if (!data.value?.voting_options) {
+        return false
     }
-).json()
+
+    for (const option of data.value.voting_options) {
+        if (option.option_type === 'single') {
+            if (!singleChoices[option.option_id]) {
+                toast.error(`Please select an option for "${option.option_title}"`)
+                return false
+            }
+        } else {
+            if (!multipleChoices[option.option_id] || multipleChoices[option.option_id].length === 0) {
+                toast.error(`Please select at least one option for "${option.option_title}"`)
+                return false
+            }
+        }
+    }
+    
+    return true
+}
+
+function getVoteData() {
+    const user = JSON.parse(localStorage.getItem('user'))
+    
+    // 合并单选和多选的结果
+    const votes = []
+    
+    // 处理单选结果
+    Object.entries(singleChoices).forEach(([option_id, value]) => {
+        votes.push({
+            option_id,
+            option_value: [value]
+        })
+    })
+    
+    // 处理多选结果
+    Object.entries(multipleChoices).forEach(([option_id, values]) => {
+        votes.push({
+            option_id,
+            option_value: values
+        })
+    })
+
+    return {
+        "user_id": user.vote_id,
+        "user_nickname": user.vote_nickname,
+        "voting_id": votingId.value,
+        "votes": votes
+    }
+}
+
+const { execute } = useFetch(postUrl, { immediate: false })
+    .post(getVoteData)
+    .json()
+
+async function handleSubmit() {
+    if (!validateVotes()) {
+        return
+    }
+
+    try {
+        await execute()
+        toast.success('Voting Successfully!')
+        router.push(`/votePending`)
+    } catch (error) {
+        toast.error('Failed to submit vote. Please try again.')
+    }
+}
+
+function handleBackClick() {
+    router.push("/")
+}
 </script>
