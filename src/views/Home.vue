@@ -1,6 +1,6 @@
 <template>
   <div class="h-full justify-center items-center w-full px-24 flex flex-col">
-    <VotingList v-if="!!user.id" />
+    <VotingList v-if="!!user.vote_id" />
 
     <Card class="w-full max-w-sm mt-16" v-else>
       <CardHeader>
@@ -17,8 +17,8 @@
           <Input id="id" type='text' required v-model="voteId" />
         </div>
         <div class="grid gap-2">
-          <Label for="password">Password</Label>
-          <Input id="password" type="password" required v-model="nickname" />
+          <Label for="nickname">Nickname</Label>
+          <Input id="nickname" type="text" required v-model="voteNickname" />
         </div>
       </CardContent>
       <CardFooter>
@@ -43,8 +43,8 @@ import { toast } from 'vue-sonner'
 
 
 const voteId = ref('')
-const nickname = ref('')
-const user = useStorage('user', { id: '', nickname: '' })
+const voteNickname = ref('')
+const user = useStorage('user', { vote_id: '', vote_nickname: '' })
 
 
 function handleSaveCheck() {
@@ -55,8 +55,9 @@ function handleSaveCheck() {
 function handleSaveClick() {
   const isVoteIdValid = handleSaveCheck()
   if (isVoteIdValid) {
-    user.value.id = voteId.value
-    user.value.nickname = nickname.value
+    user.value.vote_id = voteId.value
+    user.value.vote_nickname = voteNickname.value
+    toast.success('Voter information saved!')
   } else {
     toast.error('Please enter the correct eight-digit vote id')
   }
