@@ -34,19 +34,25 @@
                                             <el-radio label="multipleChoice" value="multiply">Multiple choice</el-radio>
                                         </el-radio-group>
                                     </el-form-item>
-                                    <el-form-item label="Choice 1" prop="list_title">
-                                        <el-input v-model="voting_option.option_list.list_title1"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="Choice 2" prop="list_title">
-                                        <el-input v-model="voting_option.option_list.list_title2"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="Choice 3" prop="list_title">
-                                        <el-input v-model="voting_option.option_list.list_title3"></el-input>
-                                    </el-form-item>
-
+                                    
+                                    <el-form-item 
+                                        v-for="(choice, choiceIndex) in voting_option.option_list" 
+                                        :key="choiceIndex"
+                                        :label="`Choice ${choiceIndex + 1}`" 
+                                        :prop="`option_list[${choiceIndex}].list_title`"
+                                    >
+                                        <div class="flex justify-center items-center gap-2 w-full">
+                                            <el-input v-model="choice.list_title"></el-input>
+                                            
+                                            <el-button @click="removeChoice(index, choiceIndex)" type="danger" :icon="Delete" circle />
+                                        </div>
+                                    </el-form-item>                         
+                                    <el-button @click="addChoice(index)">Add Choice</el-button>
+                                    <el-button @click="removeOption(index)" type="danger">Delete Option</el-button>
                                     <div class="static-content-item">
                                         <el-divider direction="horizontal"></el-divider>
                                     </div>
+                                    
                                 </el-form>
                                 </div>
 
@@ -66,40 +72,36 @@
 </template>
 
 <script setup>
+import { Delete } from '@element-plus/icons-vue'
 import { toast } from 'vue-sonner'
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Checkbox } from '@/components/ui/checkbox'
 import { useFetch } from '@vueuse/core'
 import { useRouteParams } from '@vueuse/router'
-import { ref,reactive,getCurrentInstance } from 'vue'
+import { ref,reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { API_URL } from '@/lib/utils'
+import { API_URL, MAX_NUM } from '@/lib/utils'
 
 const router = useRouter()
-const checkboxLists = ref([])
 const userId = useRouteParams('id')
 const postUrl = `${API_URL}/create-voting`
 
 const votingForm = reactive({
     voting_name:'',
     voting_description:'',
-    status:'open',
     created_by: userId,
     voting_options:[
         {
             option_title:'',
             option_type:'',
             option_list:[
-                { list_title1: '' },
-                { list_title2: '' },
-                { list_title3: '' }
+                { list_title: '' },
             ]
         }
 
     ]
 });
+
+const { execute } = useFetch(postUrl, { immediate: false }).post(votingForm).json()
 
 const rules = reactive({
     voting_name: [{
@@ -125,54 +127,51 @@ const formRules = reactive({
 
 const vForm = ref(null)
 
-const resetForm = () => {
-  vForm.value.resetFields()
-}
-
 const addOption = () => {
-    const newIndex = votingForm.voting_options.length
+    if(votingForm.voting_options.length >= MAX_NUM) {
+        toast.error(`You can only add up to ${MAX_NUM} options`)
+        return
+    }
+
     votingForm.voting_options.push({
             option_title:'',
             option_type:'',
             option_list:[
-                { list_title1: '' },
-                { list_title2: '' },
-                { list_title3: '' }
+                { list_title: '' },
             ],
-            index: newIndex
-        });
+    });
 };
 
-const submitData =() =>{
-    const postData = {
-        voting_name: votingForm.voting_name,
-        voting_description: votingForm.voting_description,
-        status: votingForm.status,
-        created_by: votingForm.created_by,
-        voting_options: votingForm.voting_options.map((voting_option, index) => ({
-            option_title: voting_option.option_title,
-            option_type: voting_option.option_type,
-            option_list: [{
-                list_title1: voting_option.option_list.list_title1,
-                list_title2: voting_option.option_list.list_title2,
-                list_title3: voting_option.option_list.list_title3,
-            }]
-        }))
-        }
-    
-    return postData;
+function addChoice(index) {
+    if (votingForm.voting_options[index].option_list.length >= MAX_NUM) {
+        toast.error(`You can only add up to ${MAX_NUM} choices`)
+        return
+    }
+    votingForm.voting_options[index].option_list.push({ list_title: '' })
 }
 
+
+function removeChoice(optionIndex, choiceIndex) {
+    if (votingForm.voting_options[optionIndex].option_list.length <= 1) {
+        toast.error('At least one choice is required')
+        return
+    }
+    votingForm.voting_options[optionIndex].option_list.splice(choiceIndex, 1)
+}
+
+function removeOption(optionIndex) {
+    if (votingForm.voting_options.length <= 1) {
+        toast.error('At least one option is required')
+        return
+    }
+    votingForm.voting_options.splice(optionIndex, 1)
+
+}
 const submitForm = async() => {
     const valid = await vForm.value.validate();
     if (!valid) {
         return
     }
-
-    const { postData, execute } = useFetch(postUrl, { immediate: false }).post(
-        submitData()
-    ).json()
-    
     const res = await execute();
     if (res.code === 200) {
         toast.success('Create Successfully!')
