@@ -1,7 +1,7 @@
 <template>
     <div class="w-full h-screen flex flex-col justify-center items-center bg-background" >
         <div class="w-full h-screen flex flex-col justify-center items-center bg-zinc-50">
-            <div class="prose bg-white p-8 rounded-lg shadow-md max-w-2xl overflow-scroll">
+            <div class="bg-white p-8 rounded-lg shadow-md max-w-2xl overflow-scroll">
                 <div>
                     <el-form :model="votingForm" ref="vForm" :rules="rules" label-position="left" label-width="150px"
                         size="default" @submit.prevent>
@@ -12,7 +12,7 @@
                             </div>
                             </template>
                             <el-form-item label="Voting Name" prop="voting_name" class="required label-right-align">
-                                <el-input v-model="votingForm.voting_name" type="text" clearable></el-input>
+                                <el-input v-model="votingForm.voting_name" type="text" maxlength="150" show-word-limit clearable></el-input>
                             </el-form-item>
                             <el-form-item label="Voting Description" prop="voting_description" class="required label-right-align">
                                 <el-input v-model="votingForm.voting_description" type="text" clearable></el-input>
@@ -26,7 +26,7 @@
                                 <div v-for="(voting_option, index) in votingForm.voting_options" :key="index" >
                                 <el-form :model="voting_option" label-width="120px"  :rules="formRules" label-position="left" size="default" @submit.prevent>
                                     <el-form-item :label="'Option ' + (index + 1)+ ' Title'" class="required label-right-align" prop="option_title">
-                                        <el-input v-model="voting_option.option_title" type="text" clearable></el-input>
+                                        <el-input v-model="voting_option.option_title" type="text" maxlength="150" show-word-limit clearable></el-input>
                                     </el-form-item>
                                     <el-form-item label="Option Type" class="required label-right-align" prop="option_type">
                                         <el-radio-group v-model="voting_option.option_type">
@@ -42,8 +42,7 @@
                                         :prop="`option_list[${choiceIndex}].list_title`"
                                     >
                                         <div class="flex justify-center items-center gap-2 w-full">
-                                            <el-input v-model="choice.list_title"></el-input>
-                                            
+                                            <el-input v-model="choice.list_title" maxlength="75" show-word-limit clearable></el-input>
                                             <el-button @click="removeChoice(index, choiceIndex)" type="danger" :icon="Delete" circle />
                                         </div>
                                     </el-form-item>                         
