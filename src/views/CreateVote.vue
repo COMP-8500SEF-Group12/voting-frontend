@@ -1,8 +1,7 @@
 <template>
     <div class="w-full h-screen flex flex-col justify-center items-center bg-background" >
         <div class="w-full h-screen flex flex-col justify-center items-center bg-zinc-50">
-            <div class="prose bg-white p-8 rounded-lg shadow-md max-w-2xl">
-
+            <div class="prose bg-white p-8 rounded-lg shadow-md max-w-2xl overflow-scroll">
                 <div>
                     <el-form :model="votingForm" ref="vForm" :rules="rules" label-position="left" label-width="150px"
                         size="default" @submit.prevent>
