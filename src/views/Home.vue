@@ -40,7 +40,6 @@ import { Label } from '@/components/ui/label'
 import { useStorage } from '@vueuse/core'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
-import { h } from 'vue'
 
 
 const voteId = ref('')

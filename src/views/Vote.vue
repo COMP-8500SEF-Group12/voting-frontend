@@ -27,13 +27,13 @@
                         {{ item.list_title }}
                     </div>
                 </div>
-                <div class="w-full flex flex-row-reverse">
+                <div class="w-full flex flex-row-reverse gap-2">
                     <Button @click="async () => {
         toast.success('Voting Successfully!')
         router.push(`/votePending`)
-        // 发送一个 post 请求
         await execute()
             }">Submit</Button>
+                <Button variant="secondary" @click="handleBackClick">Back</Button>
                 </div>
             </div>
         </div>
@@ -66,4 +66,8 @@ const { postData, execute } = useFetch(postUrl, { immediate: false }).post(
         "votes": ["1", "2"]
     }
 ).json()
+
+function handleBackClick(){
+    router.push("/")
+}
 </script>

@@ -62,8 +62,9 @@
                     </el-form>
                 </div>
 
-                    <div class="w-full flex flex-row-reverse">
-                        <Button type="primary" @click="submitForm">Submit</Button>
+                    <div class="w-full flex flex-row-reverse gap-2">
+                        <Button @click="submitForm">Create</Button>
+                        <Button variant="secondary" @click="handleBackClick">Back</Button>
                     </div>
             </div>
         </div>
@@ -179,6 +180,10 @@ const submitForm = async() => {
     } else {
         toast.error('Create Unsuccessfully!')
     }
+}
+
+function handleBackClick(){
+    router.push('/')
 }
 
 
