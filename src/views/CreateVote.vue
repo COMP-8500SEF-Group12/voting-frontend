@@ -15,7 +15,7 @@
                                 <el-input v-model="votingForm.voting_name" type="text" maxlength="150" show-word-limit clearable></el-input>
                             </el-form-item>
                             <el-form-item label="Voting Description" prop="voting_description" class="required label-right-align">
-                                <el-input v-model="votingForm.voting_description" type="text" clearable></el-input>
+                                <el-input v-model="votingForm.voting_description" type="text" maxlength="200" show-word-limit clearable></el-input>
                             </el-form-item>
 
                             <div class="static-content-item">
