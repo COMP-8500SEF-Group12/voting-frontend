@@ -57,7 +57,7 @@ function handleDeleteClick(voteId){
                 }).then(res => {
                     if (res.ok) {
                         console.log("delete success")
-                        router.push("/")
+                        window.location.reload()
                     }
                 })
             }
