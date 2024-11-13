@@ -16,6 +16,7 @@
         <div class="w-full flex flex-row-reverse mt-4" >
                 <Button @click="handleCreateVoteClick" v-show="data.is_has_authority"> Create Vote</Button>
          </div>
+
     </div>
 </template>
 
@@ -26,6 +27,7 @@ import { useFetch } from '@vueuse/core'
 import { useRouter } from 'vue-router'
 import { API_URL } from '@/lib/utils'
 import { Button } from '@/components/ui/button';
+import { toast } from 'vue-sonner'
 
 const router = useRouter()
 
@@ -36,9 +38,31 @@ function handleCreateVoteClick(){
     router.push("/createVote")
 }
 const user = JSON.parse(localStorage.getItem('user'))
-
+const deleteURL = `${API_URL}/delete-voting`
 function handleDeleteClick(voteId){
     console.log("delete vote id",voteId, "user id is",user.vote_id)
+    toast.warning('Are you sure to delete this vote? ', {
+        action: {
+            label: 'Delete',
+            onClick: () => {
+                fetch(deleteURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        voting_id: voteId,
+                        user_id: user.vote_id
+                    })
+                }).then(res => {
+                    if (res.ok) {
+                        console.log("delete success")
+                        router.push("/")
+                    }
+                })
+            }
+        },
+    })
 }
 
 const { data, isFinished } = useFetch(`${API_URL}/voting-lists?user_id=${user.vote_id}`).get().json()

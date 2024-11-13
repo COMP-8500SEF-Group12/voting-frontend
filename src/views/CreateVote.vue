@@ -76,19 +76,19 @@ import { Delete } from '@element-plus/icons-vue'
 import { toast } from 'vue-sonner'
 import { Button } from '@/components/ui/button'
 import { useFetch } from '@vueuse/core'
-import { useRouteParams } from '@vueuse/router'
 import { ref,reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { API_URL, MAX_NUM } from '@/lib/utils'
 
 const router = useRouter()
-const userId = useRouteParams('id')
+const user = JSON.parse(localStorage.getItem('user'))
 const postUrl = `${API_URL}/create-voting`
 
 const votingForm = reactive({
     voting_name:'',
+    status: 'open',
     voting_description:'',
-    created_by: userId,
+    created_by: user.vote_id,
     voting_options:[
         {
             option_title:'',
@@ -173,7 +173,7 @@ const submitForm = async() => {
         return
     }
     const res = await execute();
-    if (res.code === 200) {
+    if (res.status === 200) {
         toast.success('Create Successfully!')
         router.push('/');
     } else {
