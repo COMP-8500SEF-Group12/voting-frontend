@@ -6,11 +6,6 @@
       }">
         Back to Home
       </Button>
-      <Button variant="outline" class="w-full" @click="() => {
-        router.push(`/votingResult/1`)
-      }">
-        View Voting Results
-      </Button>
     </div>
   </div>
 </template>

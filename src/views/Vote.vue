@@ -54,21 +54,29 @@ import { useFetch } from '@vueuse/core'
 import { useRouteParams } from '@vueuse/router'
 import { useRouter } from 'vue-router'
 import { API_URL } from '@/lib/utils'
-import { reactive } from 'vue'
+import { reactive, watchEffect } from 'vue'
 
 const router = useRouter()
 const votingId = useRouteParams('id')
-const url = `${API_URL}/voting-detail?voting_id=${votingId.value}&user_id=s123456`
-const postUrl = `${API_URL}/vote`
+const user = JSON.parse(localStorage.getItem('user'))
+const url = `${API_URL}/voting-detail?voting_id=${votingId.value}&user_id=${user.vote_id}`
+const postUrl = `${API_URL}/submit-vote`
 const { data, isFinished } = useFetch(url).get().json()
 
 // 分别存储单选和多选的结果
 const singleChoices = reactive({})
 const multipleChoices = reactive({})
 
+
+watchEffect(() => {
+  if (isFinished.value && data.value) {
+    if (data.value.is_voted) {
+      router.push(`/votingResult/${votingId.value}`)
+    }
+  }
+})
+
 function validateVotes() {
-    console.log(singleChoices)
-    console.log(multipleChoices)  
     if (!data.value?.voting_options) {
         return false
     }
@@ -120,22 +128,38 @@ function getVoteData() {
     }
 }
 
-const { execute } = useFetch(postUrl, { immediate: false })
-    .post(getVoteData)
-    .json()
+const execute = async () => {
+    const voteData = getVoteData()
+    const response = await fetch(postUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(voteData)
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+        return data; // 直接返回错误信息，包含 {error: "User has already voted"}
+    }
+    
+    return data
+};
 
 async function handleSubmit() {
     if (!validateVotes()) {
         return
     }
-
-    try {
-        await execute()
-        toast.success('Voting Successfully!')
-        router.push(`/votePending`)
-    } catch (error) {
-        toast.error('Failed to submit vote. Please try again.')
-    }
+    const result = await execute();
+        if (result.error) {
+            toast.error(result.error);
+            router.push(`/votePending`);
+            return;
+        }
+        
+    toast.success('Voting Successfully!');
+    router.push(`/votePending`);
 }
 
 function handleBackClick() {

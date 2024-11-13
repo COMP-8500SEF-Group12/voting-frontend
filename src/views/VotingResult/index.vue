@@ -2,7 +2,7 @@
     <div class="w-full  flex flex-col justify-center items-center bg-zinc-50" v-if="isFinished">
         <div class="prose w-full p-12 flex flex-col justify-center items-center bg-zinc-50">
 
-            <div class="bg-white p-8 rounded-lg shadow-md ">
+            <div class="bg-white w-full p-8 rounded-lg shadow-md ">
                 <h1 class="text-3xl font-bold mb-4">{{ data.voting_name }}</h1>
                 <p class="text-gray-600 mb-6">Thank you for your vote!</p>
                 <div class="mb-6">
@@ -35,7 +35,8 @@ import { API_URL } from '@/lib/utils'
 
 const router = useRouter()
 const votingId = useRouteParams('id')
-const url = `${API_URL}/voting-detail?voting_id=${votingId.value}&user_id=s123456`
+const user = JSON.parse(localStorage.getItem('user'))
+const url = `${API_URL}/voting-result?voting_id=${votingId.value}&user_id=${user.vote_id}`
 const { data, isFinished } = useFetch(url).get().json()
 
 const chartOneOption = computed(() => {
