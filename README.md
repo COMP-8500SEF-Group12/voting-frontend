@@ -1,3 +1,4 @@
+# Online Voting System - Frontend
 ## 1. Overview
 `Voting-frontend` is a free and open source front-end voting template which is designed to provide the interfaces for users to participate in voting activities. Using the latest vue3, vite, JavaScript technology development, the frontend interacts with the backend server and database to complete whole voting processes.
 
